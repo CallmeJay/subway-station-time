@@ -1,6 +1,6 @@
 /**
  * 用户配置与统计 · 基于 wx.setStorageSync
- * key: bjsubway_profile
+ * key: subwway_profile
  *
  * {
  *   nickname: '通勤客 #4321',
@@ -15,7 +15,7 @@
  * }
  */
 
-const KEY = 'bjsubway_profile';
+const KEY = 'subwway_profile';
 
 const DEFAULTS = {
   nickname: '',
