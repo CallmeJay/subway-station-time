@@ -1,0 +1,333 @@
+/* picker · 两列 master-detail 布局 */
+
+.picker {
+  width: 100%;
+  height: 100vh;
+  background: var(--bg);
+  overflow: hidden;
+  position: relative;
+}
+
+/* 自定义导航 */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  z-index: 11;
+  border-bottom: 1rpx solid var(--hairline);
+  display: flex;
+  align-items: stretch;
+}
+.nav-title {
+  flex: 1;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 180rpx; /* 给右上胶囊腾位 */
+  box-sizing: border-box;
+}
+.nav-back {
+  position: absolute;
+  left: 24rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 12;
+}
+.nav-back:active {
+  background: var(--row-active);
+}
+.nav-back .back-arrow {
+  font-size: 56rpx;
+  color: var(--ink);
+  font-weight: 300;
+  line-height: 1;
+  margin-top: -8rpx;
+}
+
+/* 主容器 */
+.main {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  background: var(--bg);
+}
+
+/* === 左列: 线路 === */
+.left-pane {
+  width: 200rpx;
+  height: 100%;
+  background: var(--bg);
+  border-right: 1rpx solid var(--hairline);
+  flex-shrink: 0;
+  padding: 8rpx 0 calc(140rpx + env(safe-area-inset-bottom));  /* 内部 padding-bottom 给 tab bar 留空间 */
+  box-sizing: border-box;
+}
+
+.line-row {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 24rpx 12rpx;
+  transition: all 0.15s ease;
+}
+.line-row:active { transform: scale(0.96); }
+
+.line-row.active {
+  background: var(--card);
+}
+.line-row.active .line-name {
+  color: var(--ink);
+  font-weight: 700;
+}
+.line-row.active .line-num {
+  transform: scale(1.1);
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.12);
+}
+
+.line-num {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.line-name {
+  font-size: 22rpx;
+  color: var(--ink-2);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.line-active-bar {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 6rpx;
+  height: 48rpx;
+  border-radius: 0 6rpx 6rpx 0;
+  transform: translateY(-50%);
+}
+
+/* === 右列: 站点 === */
+.right-pane {
+  flex: 1;
+  height: 100%;
+  background: var(--card);
+  padding: 0 0 calc(140rpx + env(safe-area-inset-bottom)) 0;  /* 内部 padding-bottom 给 tab bar 留空间 */
+  box-sizing: border-box;
+}
+
+.right-header {
+  padding: 28rpx 36rpx 20rpx;
+  border-bottom: 1rpx solid var(--hairline);
+  background: var(--card);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  /* 兜底: 显式实色, 防止某些 WebKit 环境下 sticky 元素背景半透 */
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+.rh-line {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-bottom: 8rpx;
+}
+.rh-num {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: 800;
+}
+.rh-name {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+.rh-meta {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+.rh-count { font-feature-settings: "tnum" 1; }
+.rh-divider { opacity: 0.4; }
+.rh-route {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 站点列表 (地铁运行图样式) */
+.station-item {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  padding: 0 36rpx;
+  transition: background 0.15s ease;
+}
+.station-item:active {
+  background: rgba(0,0,0,0.04);
+}
+
+/* track 列: 固定宽度, 内含 上半线 + 圆点 + 下半线 */
+.track-col {
+  width: 48rpx;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 24rpx;
+  position: relative;
+}
+.track-half {
+  width: 4rpx;
+  flex: 1;
+  opacity: 0.5;
+}
+.track-half.top    { margin-bottom: -1rpx; }
+.track-half.bottom { margin-top: -1rpx; }
+
+/* 端点站: 上半或下半线隐藏 */
+.station-item.is-first .track-half.top    { visibility: hidden; }
+.station-item.is-last  .track-half.bottom { visibility: hidden; }
+
+.track-dot {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  background: var(--card);
+  border: 4rpx solid;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+.track-dot-inner {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+}
+
+/* 站点内容右侧自适应 padding */
+.station-text {
+  padding: 22rpx 0;
+}
+.station-tags {
+  padding: 22rpx 0;
+}
+
+.station-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.station-cn {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+.station-item.is-origin .station-cn {
+  color: var(--seat);
+  font-weight: 700;
+}
+.station-py {
+  font-size: 18rpx;
+  color: var(--ink-3);
+  margin-top: 4rpx;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.station-tags {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  flex-shrink: 0;
+  justify-content: flex-end;
+}
+.origin-pill {
+  font-size: 18rpx;
+  color: var(--seat);
+  background: rgba(0, 149, 94, 0.10);
+  padding: 4rpx 12rpx;
+  border-radius: 100rpx;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.endpoint-pill {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  font-size: 20rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+}
+.chevron {
+  color: var(--ink-3);
+  font-size: 36rpx;
+  font-weight: 300;
+  margin-left: 4rpx;
+  line-height: 1;
+}
+
+/* 空态 */
+.empty {
+  margin: 120rpx 36rpx;
+  text-align: center;
+}
+.empty-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12rpx;
+}
+.empty-sub {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  line-height: 1.6;
+  white-space: pre-line;
+}

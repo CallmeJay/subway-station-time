@@ -1,0 +1,182 @@
+<view class="me {{theme === 'dark' ? 'theme-dark' : ''}}">
+
+  <!-- 自定义导航 -->
+  <view class="nav-bar" style="height: {{navTotalHeight}}px;">
+    <view class="nav-back" style="top: {{statusBarHeight + 4}}px;" bindtap="goBack">
+      <text class="back-arrow">‹</text>
+    </view>
+    <view class="nav-title" style="padding-top: {{statusBarHeight}}px;">
+      <text>我的</text>
+    </view>
+  </view>
+
+  <view class="content" style="padding-top: {{navTotalHeight + 16}}px;">
+
+    <!-- 免责声明 (合规, 显著位置) -->
+    <view class="disclaimer-card" bindtap="showDisclaimer" hover-class="row-active" hover-stay-time="120">
+      <view class="dc-icon">i</view>
+      <view class="dc-text">
+        <view class="dc-title">非官方应用 · 数据仅供参考</view>
+        <view class="dc-sub">数据来源：高德地图 / 京港地铁官网 · 实际班次以官方为准 ›</view>
+      </view>
+    </view>
+
+    <!-- 一键完善资料 banner (只在还是默认资料时显示) -->
+    <view class="profile-hint" wx:if="{{showHint}}">
+      <view class="ph-icon">✨</view>
+      <view class="ph-text">点头像选「微信头像」 · 然后点昵称选「微信昵称」 — 两步同步过来</view>
+    </view>
+
+    <!-- 用户卡 -->
+    <view class="user-card">
+      <!-- 头像: button + open-type="chooseAvatar" 调起微信头像选择器 -->
+      <button
+        class="avatar-btn"
+        open-type="chooseAvatar"
+        bindchooseavatar="onChooseAvatar"
+        hover-class="avatar-active"
+      >
+        <view class="avatar-ring">
+          <image
+            wx:if="{{p.avatarUrl}}"
+            class="avatar-img"
+            style="width: 112rpx; height: 112rpx; border-radius: 50%;"
+            src="{{p.avatarUrl}}"
+            mode="aspectFill"
+          />
+          <view class="avatar avatar-fallback" wx:else>
+            <text>{{p.nickname[0] || '我'}}</text>
+          </view>
+        </view>
+        <view class="avatar-badge">
+          <text class="badge-icon">✎</text>
+        </view>
+      </button>
+
+      <view class="user-info">
+        <view class="nick-row" wx:if="{{!editingNick}}" bindtap="startEditNick">
+          <text class="nick">{{p.nickname}}</text>
+          <text class="edit-hint">编辑 ›</text>
+        </view>
+        <view class="nick-edit" wx:else>
+          <!-- type="nickname" 让用户长按选择"微信昵称"快速填入 -->
+          <input
+            class="nick-input"
+            type="nickname"
+            value="{{nickInput}}"
+            maxlength="20"
+            focus="{{true}}"
+            confirm-type="done"
+            bindinput="onNickInput"
+            bindconfirm="saveNick"
+            bindblur="saveNick"
+            placeholder="点击使用微信昵称"
+          />
+          <view class="nick-cancel" catchtap="cancelEditNick">取消</view>
+        </view>
+        <view class="user-meta">
+          <text>使用 {{daysUsed}} 天 · 收藏 {{favCount}} 站</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 数据快捷 -->
+    <view class="row-group">
+      <view class="row" hover-class="row-active" hover-stay-time="120" bindtap="goFavorites">
+        <view class="row-icon icon-star-fill">★</view>
+        <view class="row-text">
+          <view class="row-title">我的收藏</view>
+          <view class="row-sub">{{favCount}} 个常用站点</view>
+        </view>
+        <view class="row-chevron">›</view>
+      </view>
+    </view>
+
+    <!-- 设置 -->
+    <view class="section-label">设置</view>
+    <view class="row-group">
+      <view class="row" hover-class="row-active" hover-stay-time="120" bindtap="setHomeFromCurrent">
+        <view class="row-icon icon-home">⌂</view>
+        <view class="row-text">
+          <view class="row-title">默认开屏站</view>
+          <view class="row-sub">{{homeLabel}}</view>
+        </view>
+        <view class="row-action" wx:if="{{p.homeLine}}" catchtap="clearHome">清除</view>
+        <view class="row-chevron" wx:else>›</view>
+      </view>
+
+      <view class="row" hover-class="row-active" hover-stay-time="120" bindtap="cycleTheme">
+        <view class="row-icon icon-moon">◐</view>
+        <view class="row-text">
+          <view class="row-title">主题</view>
+          <view class="row-sub">{{p.theme === 'dark' ? '深色模式' : (p.theme === 'light' ? '浅色模式' : '跟随系统')}}</view>
+        </view>
+        <view class="row-chevron">›</view>
+      </view>
+
+      <view class="row" bindtap="toggleHaptic">
+        <view class="row-icon icon-haptic">≋</view>
+        <view class="row-text">
+          <view class="row-title">触感反馈</view>
+          <view class="row-sub">点击和切换时震动</view>
+        </view>
+        <view class="row-toggle {{p.haptic ? 'on' : ''}}">
+          <view class="toggle-knob"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 关于 -->
+    <view class="section-label">关于</view>
+    <view class="row-group">
+      <view class="row" hover-class="row-active" hover-stay-time="120" bindtap="showSources">
+        <view class="row-icon icon-source">⊕</view>
+        <view class="row-text">
+          <view class="row-title">数据来源</view>
+          <view class="row-sub">京港地铁 · 高德地图 · DB11/T657.2</view>
+        </view>
+        <view class="row-chevron">›</view>
+      </view>
+
+      <view class="row" hover-class="row-active" hover-stay-time="120" bindtap="showFeedback">
+        <view class="row-icon icon-mail">✉</view>
+        <view class="row-text">
+          <view class="row-title">反馈与建议</view>
+          <view class="row-sub">遇到 bug 或想加功能</view>
+        </view>
+        <view class="row-chevron">›</view>
+      </view>
+
+      <view class="row">
+        <view class="row-icon icon-info">i</view>
+        <view class="row-text">
+          <view class="row-title">版本</view>
+          <view class="row-sub">{{version}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 危险区 -->
+    <view class="section-label">数据管理</view>
+    <view class="row-group danger">
+      <view class="row" hover-class="row-active-danger" hover-stay-time="120" bindtap="clearFavorites">
+        <view class="row-text center danger-text">清空全部收藏</view>
+      </view>
+      <view class="row" hover-class="row-active-danger" hover-stay-time="120" bindtap="resetAll">
+        <view class="row-text center danger-text">重置所有数据</view>
+      </view>
+    </view>
+
+    <view class="footer">
+      下一班 · 地铁助手 · {{version}}
+      <view class="footer-sub">
+        本应用为个人项目, 与北京地铁公司、京港地铁公司无任何关联.{{'\n'}}
+        数据来自高德地图开放接口与京港地铁官网, 经合成生成参考时刻表.{{'\n'}}
+        实际首末班、班次以官方公告为准.
+      </view>
+    </view>
+
+  </view>
+
+  <bottom-tabs current="me" />
+</view>

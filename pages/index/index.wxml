@@ -1,0 +1,148 @@
+<view class="phone {{theme === 'dark' ? 'theme-dark' : ''}}" style="--accent: {{line.color}}; --accent-deep: {{line.colorDeep}};">
+
+  <view class="statusbar" style="height: {{statusBarHeight + 24}}px;"></view>
+
+  <!-- top -->
+  <view class="top-bar">
+    <view class="top-title">下一班 · 地铁助手</view>
+    <view class="top-time">实时 · {{nowText}}</view>
+  </view>
+
+  <!-- 主卡片 (body 区域不绑定 tap, 只在 station-row 和 change-pill 触发跳转) -->
+  <view class="main-card">
+    <view class="card-head">
+      <view class="head-row1">
+        <view class="line-pill">
+          <view class="num">{{line.no}}</view>
+          {{line.shortName}}
+        </view>
+        <view class="head-actions">
+          <view class="nowtime"><view class="live"></view>LIVE</view>
+          <view class="fav-btn {{isFavorite ? 'is-fav' : ''}}" hover-class="pill-active" hover-stay-time="120" bindtap="toggleFavorite">
+            <text class="fav-icon">{{isFavorite ? '★' : '☆'}}</text>
+          </view>
+          <view class="change-pill" hover-class="pill-active" hover-stay-time="120" bindtap="goPicker">
+            <text>切换</text>
+            <text class="change-arrow">›</text>
+          </view>
+        </view>
+      </view>
+      <view class="station-row" hover-class="row-active" hover-stay-time="120" bindtap="goPicker">
+        <view class="station-text">
+          <view class="station-name">{{station.cn}}</view>
+          <view class="station-en">{{station.py}}</view>
+        </view>
+        <view class="station-chevron">›</view>
+      </view>
+
+      <!-- 方向切换内嵌到 header (替代下方独立卡片) -->
+      <view class="dir-pills" wx:if="{{line.endpoints && line.endpoints.length === 2}}">
+        <view
+          class="dir-pill {{direction === 'west' ? 'active' : ''}}"
+          data-dir="west"
+          bindtap="switchDirection"
+        >
+          <text class="dir-arrow">←</text>
+          <text class="dir-target">{{line.endpoints[0]}}</text>
+        </view>
+        <view
+          class="dir-pill {{direction === 'east' ? 'active' : ''}}"
+          data-dir="east"
+          bindtap="switchDirection"
+        >
+          <text class="dir-arrow">→</text>
+          <text class="dir-target">{{line.endpoints[1]}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card-body">
+      <block wx:if="{{next}}">
+        <view class="countdown-label">下 一 班 还 有</view>
+        <view class="countdown-num-wrap {{next.display.isLong ? 'is-long' : ''}}">
+          <text class="countdown-num">{{next.display.big}}</text>
+          <text class="countdown-unit">{{next.display.unit}}</text>
+          <block wx:if="{{next.display.isLong}}">
+            <text class="countdown-num minor">{{next.display.minPart}}</text>
+            <text class="countdown-unit">{{next.display.minUnit}}</text>
+          </block>
+        </view>
+        <view class="arrival-meta">
+          预计 <text class="eta">{{next.eta}}</text> 到站 · 终点 {{next.end}}
+        </view>
+
+        <view class="chips">
+          <view class="chip chip-end">
+            <view class="dot" style="background: {{next.endColor || line.color}};"></view>
+            终点 · {{next.end}}
+          </view>
+          <view class="chip chip-seat" wx:if="{{next.isOrigin || station.isOrigin}}">
+            <view class="seat-icon"></view>
+            始发 · 有座
+          </view>
+        </view>
+
+        <view class="pulse-bar"><view class="pulse-fill"></view></view>
+        <view class="pulse-text">
+          <text wx:if="{{next.minute <= 1}}" class="urgent">列车进站中</text>
+          <text wx:else>列车运行中 · INCOMING</text>
+        </view>
+      </block>
+
+      <block wx:else>
+        <view class="ended">
+          <view class="ended-title">本日运营已结束</view>
+          <view class="ended-sub">明早 05:00 起恢复运营</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 后续班次 -->
+  <view class="upcoming-card" wx:if="{{upcoming.length}}">
+    <view class="section-title">
+      <view class="section-title-left">
+        <text class="section-main">后续班次</text>
+        <text class="section-sub">在 {{station.cn}} 到达</text>
+      </view>
+      <view class="see-all-btn" hover-class="row-active-feedback" hover-stay-time="120" bindtap="goSchedule">
+        <text>全天</text>
+        <text class="see-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 单终点固定时, 在 header 显示一次 (节省 row 空间) -->
+    <view class="upcoming-fixed-end" wx:if="{{upcomingFixedEnd}}">
+      均开往
+      <view class="info-dot inline" style="background: {{line.color}};"></view>
+      <text>{{upcomingFixedEnd}}</text>
+    </view>
+
+    <view class="train-row" wx:for="{{upcoming}}" wx:key="time">
+      <view class="train-time">{{item.time}}</view>
+      <view class="train-info">
+        <!-- 终点轮换的线才逐行显示终点 -->
+        <block wx:if="{{upcomingHasVaryingEnd}}">
+          <view class="info-dot" style="background: {{item.endColor || line.color}};"></view>
+          <text class="info-end">→ {{item.end}}</text>
+        </block>
+        <view class="origin-tag" wx:if="{{item.isOrigin}}">始发 · 有座</view>
+      </view>
+      <view class="train-eta">{{item.etaText}}</view>
+    </view>
+  </view>
+
+  <!-- 末班车 -->
+  <view class="last-train-card" wx:if="{{last}}">
+    <view class="last-icon">末</view>
+    <view class="last-info">
+      <view class="label">末班车</view>
+      <view class="main">{{last.time}} → {{last.end}}</view>
+      <view class="sub">{{last.remainingLabel}}</view>
+    </view>
+  </view>
+
+  <!-- 全局共享底部 tab bar -->
+  <bottom-tabs current="index" />
+
+</view>

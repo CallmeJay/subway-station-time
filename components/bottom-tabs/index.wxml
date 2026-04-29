@@ -1,0 +1,18 @@
+<view class="bottom-tabs">
+  <view class="tab {{current === 'index' ? 'active' : ''}}" data-tab="index" bindtap="goTab" hover-class="tab-hover" hover-stay-time="100">
+    <view class="tab-icon icon-clock"></view>
+    <text>下一班</text>
+  </view>
+  <view class="tab {{current === 'picker' ? 'active' : ''}}" data-tab="picker" bindtap="goTab" hover-class="tab-hover" hover-stay-time="100">
+    <view class="tab-icon icon-list"></view>
+    <text>线路</text>
+  </view>
+  <view class="tab {{current === 'favorites' ? 'active' : ''}}" data-tab="favorites" bindtap="goTab" hover-class="tab-hover" hover-stay-time="100">
+    <view class="tab-icon icon-star"></view>
+    <text>收藏</text>
+  </view>
+  <view class="tab {{current === 'me' ? 'active' : ''}}" data-tab="me" bindtap="goTab" hover-class="tab-hover" hover-stay-time="100">
+    <view class="tab-icon icon-me"></view>
+    <text>我的</text>
+  </view>
+</view>

@@ -1,0 +1,88 @@
+<view class="sched {{theme === 'dark' ? 'theme-dark' : ''}}" style="--accent: {{line.color}}; --accent-deep: {{line.colorDeep}};">
+
+  <!-- 自定义导航 -->
+  <view class="nav-bar" style="height: {{navTotalHeight}}px;">
+    <view class="nav-back" style="top: {{statusBarHeight + 4}}px;" bindtap="goBack">
+      <text class="back-arrow">‹</text>
+    </view>
+    <view class="nav-title" style="padding-top: {{statusBarHeight}}px;">
+      <text>全天时刻表</text>
+    </view>
+  </view>
+
+  <!-- 站点 + 方向 head -->
+  <view class="head" style="padding-top: {{navTotalHeight + 16}}px;">
+    <view class="head-line">
+      <view class="line-pill" style="background: {{line.color}};">{{line.no}}</view>
+      <text class="line-name">{{line.shortName}}</text>
+    </view>
+    <view class="head-station">{{station.cn}}</view>
+    <view class="head-direction">
+      <text class="dir-arrow">{{direction === 'east' ? '→' : '←'}}</text>
+      开往 <text class="dir-target">{{direction === 'east' ? line.endpoints[1] : line.endpoints[0]}}</text>
+      <view class="head-stat">
+        <text>共 {{totalCount}} 班</text>
+        <text class="head-stat-now">现在 {{nowHour < 10 ? '0' : ''}}{{nowHour}}:{{nowMinute < 10 ? '0' : ''}}{{nowMinute}}</text>
+      </view>
+    </view>
+
+    <view class="fixed-end" wx:if="{{fixedEnd}}">
+      <view class="fe-dot" style="background: {{line.color}};"></view>
+      <text>所有班次均开往 <text class="fe-name">{{fixedEnd}}</text></text>
+    </view>
+  </view>
+
+  <!-- 工作日 / 双休 切换 -->
+  <view class="dt-toggle">
+    <view class="dt-btn {{daytype === 'weekday' ? 'active' : ''}}" data-dt="weekday" bindtap="switchDaytype">工作日</view>
+    <view class="dt-btn {{daytype === 'weekend' ? 'active' : ''}}" data-dt="weekend" bindtap="switchDaytype">双休日</view>
+  </view>
+
+  <!-- 数据来源诚实标注 -->
+  <view class="data-note">
+    <text class="dn-icon">i</text>
+    <text wx:if="{{daytype === 'weekday'}}">首末班来自 {{line.id === 'line4' || line.id === 'line14' || line.id === 'line16' || line.id === 'line17' ? '京港地铁官网' : '高德地图'}} · 中间班次按真实节奏算法合成</text>
+    <text wx:else>首末班车合理估算 · 双休班次基于「北京市首都之窗」官方间隔数据合成 · 实际班次以官方为准</text>
+  </view>
+
+  <!-- 时刻表内容 (按小时分组) -->
+  <view class="schedule-list">
+
+    <view
+      wx:for="{{hourBlocks}}"
+      wx:key="hour"
+      id="{{item.id}}"
+      class="hour-block {{item.isCurrent ? 'is-current' : ''}}"
+    >
+      <view class="hour-header">
+        <view class="hour-label">{{item.hourLabel}}</view>
+        <view class="hour-count">{{item.items.length}} 班</view>
+      </view>
+
+      <view class="minute-grid">
+        <view
+          wx:for="{{item.items}}"
+          wx:for-item="m"
+          wx:key="minute"
+          class="minute-chip {{m.isPast ? 'is-past' : ''}} {{m.isNow ? 'is-now' : ''}} {{m.isOrigin ? 'is-origin' : ''}}"
+          style="--c: {{m.endColor}};"
+        >
+          <view class="chip-main">
+            <text class="chip-min">{{m.minuteText}}</text>
+            <text class="chip-origin" wx:if="{{m.isOrigin}}">始</text>
+          </view>
+          <view class="chip-sub" wx:if="{{hasVaryingEnd && m.end}}">→{{m.end}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty" wx:if="{{!hourBlocks.length}}">
+      <view class="empty-title">该方向暂无班次数据</view>
+      <view class="empty-sub">请回上一页换个方向或站点</view>
+    </view>
+
+    <view class="footer-pad"></view>
+  </view>
+
+  <bottom-tabs current="" />
+</view>

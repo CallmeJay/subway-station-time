@@ -1,0 +1,87 @@
+<view class="picker {{theme === 'dark' ? 'theme-dark' : ''}}">
+
+  <!-- 自定义导航 -->
+  <view class="nav-bar" style="height: {{navTotalHeight}}px;">
+    <view class="nav-back" style="top: {{statusBarHeight + 4}}px;" bindtap="goBack">
+      <text class="back-arrow">‹</text>
+    </view>
+    <view class="nav-title" style="padding-top: {{statusBarHeight}}px;">
+      <text>选择线路与站点</text>
+    </view>
+  </view>
+
+  <!-- 主容器: 左线路 + 右站点 -->
+  <view class="main" style="top: {{navTotalHeight}}px;">
+
+    <!-- 左列: 线路 -->
+    <scroll-view class="left-pane" scroll-y enhanced show-scrollbar="{{false}}">
+      <view
+        wx:for="{{lines}}"
+        wx:key="id"
+        class="line-row {{activeLineId === item.id ? 'active' : ''}}"
+        style="--c: {{item.color}}; --cd: {{item.colorDeep}};"
+        data-id="{{item.id}}"
+        bindtap="selectLine"
+      >
+        <view class="line-num" style="background: {{item.color}};">{{item.no}}</view>
+        <view class="line-name">{{item.shortName}}</view>
+        <view class="line-active-bar" wx:if="{{activeLineId === item.id}}" style="background: {{item.color}};"></view>
+      </view>
+    </scroll-view>
+
+    <!-- 右列: 站点 -->
+    <scroll-view class="right-pane" scroll-y enhanced show-scrollbar="{{false}}">
+
+      <view class="right-header" wx:if="{{activeLine}}">
+        <view class="rh-line">
+          <view class="rh-num" style="background: {{activeLine.color}};">{{activeLine.no}}</view>
+          <text class="rh-name">{{activeLine.shortName}}</text>
+        </view>
+        <view class="rh-meta" wx:if="{{stations.length}}">
+          <text class="rh-count">{{stations.length}} 站</text>
+          <text class="rh-divider">·</text>
+          <text class="rh-route">{{stations[0].cn}} → {{stations[stations.length-1].cn}}</text>
+        </view>
+      </view>
+
+      <block wx:if="{{stations.length}}">
+        <view
+          wx:for="{{stations}}"
+          wx:key="cn"
+          class="station-item {{item.isOrigin ? 'is-origin' : ''}} {{index === 0 ? 'is-first' : ''}} {{index === stations.length - 1 ? 'is-last' : ''}}"
+          data-cn="{{item.cn}}"
+          bindtap="selectStation"
+        >
+          <!-- 站点列内嵌 track 线段: 上半 + 下半, 端点站只画一半 -->
+          <view class="track-col">
+            <view class="track-half top" style="background: {{activeLine.color}};"></view>
+            <view class="track-dot" style="border-color: {{activeLine.color}};">
+              <view class="track-dot-inner" wx:if="{{item.isOrigin}}" style="background: {{activeLine.color}};"></view>
+            </view>
+            <view class="track-half bottom" style="background: {{activeLine.color}};"></view>
+          </view>
+
+          <view class="station-text">
+            <view class="station-cn">{{item.cn}}</view>
+            <view class="station-py">{{item.py}}</view>
+          </view>
+
+          <view class="station-tags">
+            <view class="origin-pill" wx:if="{{item.isOrigin}}">始发</view>
+            <view class="endpoint-pill" wx:if="{{item.endpoint === 'west' || item.endpoint === 'east'}}" style="background: {{activeLine.color}};">{{item.endpoint === 'west' ? '起' : '终'}}</view>
+            <view class="chevron">›</view>
+          </view>
+        </view>
+      </block>
+
+      <view class="empty" wx:else>
+        <view class="empty-title">{{activeLine.shortName}} 站点数据未导入</view>
+        <view class="empty-sub">京港地铁运营线 (4/14/16/17) 已抓取真实数据,\n其他线路待 bjsubway.com 数据补全</view>
+      </view>
+
+    </scroll-view>
+  </view>
+
+  <bottom-tabs current="picker" />
+
+</view>

@@ -1,0 +1,248 @@
+.favorites {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg);
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+/* 自定义导航 */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  z-index: 11;
+  border-bottom: 1rpx solid var(--hairline);
+  display: flex;
+  align-items: stretch;
+}
+.nav-title {
+  flex: 1;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 180rpx;
+  box-sizing: border-box;
+}
+.nav-back {
+  position: absolute;
+  left: 24rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 12;
+}
+.nav-back .back-arrow {
+  font-size: 56rpx;
+  color: var(--ink);
+  font-weight: 300;
+  line-height: 1;
+  margin-top: -8rpx;
+}
+
+/* 内容 */
+.content {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
+
+/* 收藏卡片 */
+.fav-card {
+  position: relative;
+  background: var(--card);
+  border-radius: 32rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+}
+.fav-card.card-active {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-md);
+}
+
+.card-bar {
+  width: 8rpx;
+  flex-shrink: 0;
+}
+
+.card-main {
+  flex: 1;
+  padding: 24rpx 16rpx 24rpx 28rpx;
+  min-width: 0;
+}
+
+.card-row1 {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+}
+.line-pill {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18rpx;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.line-name {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: var(--ink-2);
+  letter-spacing: 0.02em;
+}
+.dir-tag {
+  flex: 1;
+  font-size: 20rpx;
+  color: var(--ink-3);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+  font-weight: 500;
+}
+
+.card-row2 {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+.station-cn {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.station-py {
+  font-size: 20rpx;
+  color: var(--ink-3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.card-row3 {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+.next-eta {
+  font-size: 22rpx;
+  color: var(--ink-2);
+  font-weight: 500;
+  display: flex;
+  align-items: baseline;
+  gap: 4rpx;
+}
+.eta-num {
+  font-size: 56rpx;
+  font-weight: 800;
+  font-feature-settings: "tnum" 1;
+  letter-spacing: -0.02em;
+  margin: 0 4rpx 0 8rpx;
+  line-height: 0.9;
+}
+.eta-num.small { font-size: 48rpx; margin-left: 12rpx; }
+.eta-unit {
+  font-size: 22rpx;
+  color: var(--ink-2);
+  font-weight: 500;
+}
+.next-eta-sub {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  letter-spacing: 0.02em;
+}
+.card-row3.ended .next-eta { color: var(--ink-3); }
+
+/* 删除按钮 */
+.card-actions {
+  width: 80rpx;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.del-btn {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.del-btn .text,
+.del-btn text {
+  font-size: 36rpx;
+  color: var(--ink-3);
+  line-height: 1;
+  font-weight: 300;
+  margin-top: -4rpx;
+}
+.del-btn.del-active {
+  background: rgba(200, 22, 29, 0.12);
+  transform: scale(0.92);
+}
+.del-btn.del-active text { color: #C8161D; }
+
+/* 空态 */
+.empty {
+  margin-top: 200rpx;
+  text-align: center;
+}
+.empty-star {
+  font-size: 160rpx;
+  color: var(--ink-3);
+  opacity: 0.3;
+  line-height: 1;
+  margin-bottom: 32rpx;
+}
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12rpx;
+}
+.empty-sub {
+  font-size: 24rpx;
+  color: var(--ink-3);
+  line-height: 1.6;
+  margin-bottom: 48rpx;
+  padding: 0 80rpx;
+}
+.empty-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  background: var(--ink);
+  color: #fff;
+  padding: 20rpx 36rpx;
+  border-radius: 100rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.empty-cta:active { transform: scale(0.96); }
+.empty-cta .cta-arrow {
+  font-size: 32rpx;
+  margin-top: -2rpx;
+}

@@ -1,0 +1,92 @@
+/* 全局吸底 tab bar — 复用 index 原 .bottom-tabs 设计 */
+
+.bottom-tabs {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background: var(--card-translucent);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border-top: 1rpx solid var(--hairline);
+  padding: 16rpx 40rpx calc(16rpx + env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--ink-3);
+  font-size: 22rpx;
+  font-weight: 500;
+  padding: 8rpx 16rpx;
+  transition: transform 0.15s ease;
+}
+.tab.tab-hover { transform: scale(0.92); }
+.tab.active { color: var(--accent); font-weight: 600; }
+
+/* CSS 简笔图标 (无图片资源) */
+.tab-icon {
+  width: 44rpx;
+  height: 44rpx;
+  position: relative;
+}
+.icon-clock {
+  border: 4rpx solid currentColor;
+  border-radius: 50%;
+}
+.icon-clock::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 22%;
+  width: 4rpx; height: 32%;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+.icon-clock::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 30%; height: 4rpx;
+  background: currentColor;
+  transform-origin: left center;
+  transform: rotate(40deg);
+}
+.icon-list {
+  background:
+    linear-gradient(currentColor, currentColor) 0 30% / 100% 4rpx,
+    linear-gradient(currentColor, currentColor) 0 50% / 100% 4rpx,
+    linear-gradient(currentColor, currentColor) 0 70% / 60% 4rpx;
+  background-repeat: no-repeat;
+}
+.icon-star {
+  background: currentColor;
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+.icon-me {
+  border: 4rpx solid currentColor;
+  border-radius: 50%;
+}
+.icon-me::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 28%;
+  width: 36%; height: 36%;
+  background: currentColor;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+.icon-me::after {
+  content: '';
+  position: absolute;
+  left: 50%; bottom: 8%;
+  width: 70%; height: 30%;
+  background: currentColor;
+  border-radius: 50% 50% 0 0;
+  transform: translateX(-50%);
+}

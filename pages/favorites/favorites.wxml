@@ -1,0 +1,81 @@
+<view class="favorites {{theme === 'dark' ? 'theme-dark' : ''}}">
+
+  <!-- 自定义导航 -->
+  <view class="nav-bar" style="height: {{navTotalHeight}}px;">
+    <view class="nav-back" style="top: {{statusBarHeight + 4}}px;" bindtap="goBack">
+      <text class="back-arrow">‹</text>
+    </view>
+    <view class="nav-title" style="padding-top: {{statusBarHeight}}px;">
+      <text>我的收藏</text>
+    </view>
+  </view>
+
+  <view class="content" style="padding-top: {{navTotalHeight + 16}}px;">
+
+    <block wx:if="{{items.length}}">
+      <view
+        wx:for="{{items}}"
+        wx:key="id"
+        class="fav-card"
+        style="--c: {{item.lineColor}}; --cd: {{item.lineColorDeep}};"
+        data-lineid="{{item.lineId}}"
+        data-station="{{item.stationCn}}"
+        data-direction="{{item.direction}}"
+        bindtap="goStation"
+        hover-class="card-active"
+        hover-stay-time="120"
+      >
+        <view class="card-bar" style="background: {{item.lineColor}};"></view>
+
+        <view class="card-main">
+          <view class="card-row1">
+            <view class="line-pill" style="background: {{item.lineColor}};">{{item.lineNo}}</view>
+            <text class="line-name">{{item.lineShortName}}</text>
+            <view class="dir-tag">→ {{item.dirLabel}}</view>
+          </view>
+
+          <view class="card-row2">
+            <view class="station-cn">{{item.stationCn}}</view>
+            <view class="station-py" wx:if="{{item.stationPy}}">{{item.stationPy}}</view>
+          </view>
+
+          <view class="card-row3" wx:if="{{item.next}}">
+            <view class="next-eta">
+              下一班 ·
+              <text class="eta-num" style="color: {{item.lineColor}};">{{item.next.display.big}}</text>
+              <text class="eta-unit">{{item.next.display.unit}}</text>
+              <block wx:if="{{item.next.display.isLong}}">
+                <text class="eta-num small" style="color: {{item.lineColor}};">{{item.next.display.minPart}}</text>
+                <text class="eta-unit">{{item.next.display.minUnit}}</text>
+              </block>
+            </view>
+            <view class="next-eta-sub">{{item.next.eta}} 到 · 终点 {{item.next.end}}</view>
+          </view>
+          <view class="card-row3 ended" wx:else>
+            <view class="next-eta">运营已结束</view>
+            <view class="next-eta-sub" wx:if="{{item.last}}">末班 {{item.last.time}} · 明早恢复</view>
+          </view>
+        </view>
+
+        <view class="card-actions">
+          <view class="del-btn" data-id="{{item.id}}" catchtap="removeItem" hover-class="del-active" hover-stay-time="120">
+            <text>×</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <view class="empty" wx:else>
+      <view class="empty-star">☆</view>
+      <view class="empty-title">还没有收藏</view>
+      <view class="empty-sub">在首页点击右上角 ★ 收藏常用站点和方向</view>
+      <view class="empty-cta" bindtap="goBack">
+        <text>去添加</text>
+        <text class="cta-arrow">›</text>
+      </view>
+    </view>
+
+  </view>
+
+  <bottom-tabs current="favorites" />
+</view>

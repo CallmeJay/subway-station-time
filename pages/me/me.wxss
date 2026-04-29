@@ -1,0 +1,431 @@
+.me {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg);
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+/* 自定义导航 */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  z-index: 11;
+  border-bottom: 1rpx solid var(--hairline);
+  display: flex;
+  align-items: stretch;
+}
+.nav-title {
+  flex: 1;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 180rpx;
+  box-sizing: border-box;
+}
+.nav-back {
+  position: absolute;
+  left: 24rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 12;
+}
+.nav-back .back-arrow {
+  font-size: 56rpx;
+  color: var(--ink);
+  font-weight: 300;
+  line-height: 1;
+  margin-top: -8rpx;
+}
+
+.content {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
+
+/* 一键完善资料提示 banner */
+.profile-hint {
+  background: linear-gradient(135deg, rgba(0, 149, 94, 0.10) 0%, rgba(0, 149, 94, 0.06) 100%);
+  border: 1rpx solid rgba(0, 149, 94, 0.20);
+  border-radius: 20rpx;
+  padding: 16rpx 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-bottom: 16rpx;
+  font-size: 22rpx;
+  color: var(--ink-2);
+  font-weight: 500;
+  line-height: 1.45;
+}
+.ph-icon {
+  font-size: 28rpx;
+  flex-shrink: 0;
+}
+.ph-text { flex: 1; min-width: 0; letter-spacing: 0.02em; }
+
+/* 免责声明卡 (顶部, 视觉醒目但不打扰) */
+.disclaimer-card {
+  background: rgba(245, 197, 24, 0.10);
+  border: 1rpx solid rgba(245, 197, 24, 0.30);
+  border-radius: 24rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+  transition: background 0.15s ease;
+}
+.disclaimer-card.row-active {
+  background: rgba(245, 197, 24, 0.18);
+}
+.dc-icon {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: #F5C518;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 800;
+  font-style: italic;
+  flex-shrink: 0;
+}
+.dc-text {
+  flex: 1;
+  min-width: 0;
+}
+.dc-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  margin-bottom: 4rpx;
+}
+.dc-sub {
+  font-size: 20rpx;
+  color: var(--ink-2);
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+/* 用户卡 */
+.user-card {
+  background: var(--card);
+  border-radius: 32rpx;
+  padding: 36rpx 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 32rpx;
+}
+/* 头像 button — 把 button 的所有默认 padding/font-size/line-height 全部清掉 */
+.avatar-btn {
+  position: relative;
+  width: 120rpx !important;
+  height: 120rpx !important;
+  min-height: 120rpx;
+  padding: 0 !important;
+  margin: 0;
+  background: transparent !important;
+  border: none;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 0;        /* 消掉 button 默认 font-size 撑高 */
+  line-height: 0;      /* 消掉 button 默认 line-height 撑高 */
+  overflow: visible;
+  transition: transform 0.15s ease;
+}
+.avatar-btn::after {
+  border: none !important;
+  border-radius: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  content: '';
+}
+.avatar-btn.avatar-active { transform: scale(0.95); }
+
+.avatar-ring {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFB800 0%, #C8161D 100%);
+  padding: 4rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.avatar-img {
+  width: 112rpx !important;
+  height: 112rpx !important;
+  border-radius: 50%;
+  display: block;
+  background: var(--card);
+  /* aspectFill 确保非方形图片中心裁剪不变形 */
+}
+.avatar.avatar-fallback {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  line-height: 1;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+/* 编辑徽章 (右下角, 浮在 ring 上) */
+.avatar-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  line-height: 1;
+  font-weight: 800;
+  box-shadow: 0 0 0 4rpx var(--card);  /* 用 box-shadow 模拟边框, 避免 border 改变盒子 */
+  pointer-events: none;
+}
+.user-info {
+  flex: 1;
+  min-width: 0;
+}
+.nick-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 8rpx;
+  min-width: 0;
+}
+.nick {
+  flex: 1;
+  min-width: 0;
+  font-size: 36rpx;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.edit-hint {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 22rpx;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+.user-meta {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+.nick-edit {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 8rpx;
+}
+.nick-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 8rpx;
+  padding: 8rpx 16rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--ink);
+  min-height: 56rpx;
+}
+.nick-cancel {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  padding: 8rpx 12rpx;
+}
+
+/* 分组 */
+.section-label {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  margin: 8rpx 16rpx 12rpx;
+  text-transform: uppercase;
+}
+
+.row-group {
+  background: var(--card);
+  border-radius: 28rpx;
+  margin-bottom: 24rpx;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.row-group.danger {
+  background: var(--card);
+}
+
+.row {
+  padding: 28rpx 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  border-bottom: 1rpx solid rgba(0,0,0,0.04);
+  transition: background 0.15s ease;
+}
+.row:last-child { border-bottom: none; }
+.row.row-active { background: rgba(0,0,0,0.03); }
+.row.row-active-danger { background: rgba(200, 22, 29, 0.06); }
+
+.row-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 16rpx;
+  background: rgba(0,0,0,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--ink-2);
+  flex-shrink: 0;
+}
+.row-icon.icon-star-fill {
+  background: rgba(255, 184, 0, 0.12);
+  color: #FFB800;
+}
+.row-icon.icon-home {
+  font-size: 36rpx;
+  color: var(--ink);
+}
+.row-icon.icon-moon {
+  font-size: 32rpx;
+}
+.row-icon.icon-haptic {
+  font-size: 28rpx;
+  font-weight: 800;
+}
+.row-icon.icon-source {
+  font-size: 32rpx;
+}
+.row-icon.icon-mail {
+  font-size: 28rpx;
+}
+.row-icon.icon-info {
+  font-size: 28rpx;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.row-text {
+  flex: 1;
+  min-width: 0;
+}
+.row-text.center {
+  text-align: center;
+}
+.row-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+.row-sub {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  margin-top: 4rpx;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.row-chevron {
+  color: var(--ink-3);
+  font-size: 36rpx;
+  font-weight: 300;
+  line-height: 1;
+}
+.row-action {
+  font-size: 22rpx;
+  color: var(--ink-2);
+  background: rgba(0,0,0,0.06);
+  padding: 8rpx 16rpx;
+  border-radius: 100rpx;
+  font-weight: 600;
+}
+.row-action:active { background: rgba(0,0,0,0.10); }
+
+.danger-text {
+  color: #C8161D;
+  font-size: 28rpx;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* 切换开关 */
+.row-toggle {
+  width: 84rpx;
+  height: 48rpx;
+  border-radius: 100rpx;
+  background: rgba(0,0,0,0.18);
+  position: relative;
+  transition: background 0.2s ease;
+}
+.row-toggle.on {
+  background: var(--seat);
+}
+.row-toggle .toggle-knob {
+  position: absolute;
+  top: 4rpx;
+  left: 4rpx;
+  width: 40rpx;
+  height: 40rpx;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.2);
+  transition: left 0.2s ease;
+}
+.row-toggle.on .toggle-knob { left: 40rpx; }
+
+/* footer */
+.footer {
+  margin-top: 48rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--ink-3);
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+.footer-sub {
+  margin-top: 16rpx;
+  padding: 0 16rpx;
+  font-size: 18rpx;
+  color: var(--ink-3);
+  opacity: 0.7;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+  white-space: pre-line;
+}

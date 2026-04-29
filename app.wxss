@@ -1,0 +1,53 @@
+/* 全局变量 + 复位 · 浅色为默认, 深色由 .theme-dark 在 root view 上启用 */
+
+page {
+  /* === 浅色 (默认) === */
+  --bg: #F2F2F0;
+  --card: #FFFFFF;
+  --card-translucent: rgba(255, 255, 255, 0.92);
+  --ink: #0A0A0A;
+  --ink-2: #545454;
+  --ink-3: #A0A0A0;
+  --hairline: rgba(10, 10, 10, 0.06);
+  --row-active: rgba(0, 0, 0, 0.04);
+  --last-icon-bg: linear-gradient(135deg, #FFE7E9 0%, #FFD1D5 100%);
+
+  /* 线路色 (浅深色都用同一份) */
+  --accent: #A4343A;
+  --accent-deep: #7A1F25;
+  --seat: #00955E;
+
+  --shadow-sm: 0 1rpx 4rpx rgba(10,10,10,0.04), 0 4rpx 12rpx rgba(10,10,10,0.04);
+  --shadow-md: 0 2rpx 6rpx rgba(10,10,10,0.06), 0 16rpx 48rpx rgba(10,10,10,0.08);
+  --shadow-lg: 0 8rpx 24rpx rgba(10,10,10,0.08), 0 32rpx 80rpx rgba(10,10,10,0.10);
+
+  background: var(--bg);
+  font-family: "HarmonyOS Sans SC", "PingFang SC", "Source Han Sans SC", sans-serif;
+  color: var(--ink);
+  font-feature-settings: "tnum" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === 深色模式 === */
+.theme-dark {
+  --bg: #0A0A0B;
+  --card: #1C1C1E;
+  --card-translucent: rgba(28, 28, 30, 0.92);
+  --ink: #F4F4F6;
+  --ink-2: #B0B0B5;
+  --ink-3: #6C6C70;
+  --hairline: rgba(255, 255, 255, 0.08);
+  --row-active: rgba(255, 255, 255, 0.06);
+  --last-icon-bg: linear-gradient(135deg, #4A1518 0%, #6E1D24 100%);
+
+  --shadow-sm: 0 1rpx 4rpx rgba(0,0,0,0.4), 0 4rpx 12rpx rgba(0,0,0,0.3);
+  --shadow-md: 0 2rpx 6rpx rgba(0,0,0,0.5), 0 16rpx 48rpx rgba(0,0,0,0.4);
+  --shadow-lg: 0 8rpx 24rpx rgba(0,0,0,0.6), 0 32rpx 80rpx rgba(0,0,0,0.5);
+
+  background: var(--bg);
+}
+
+/* 深色模式下背景色继承到 page (微信小程序 page 元素) */
+page.dark { background: #0A0A0B; }
+
+view, text { box-sizing: border-box; }

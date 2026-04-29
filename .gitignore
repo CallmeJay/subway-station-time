@@ -1,0 +1,19 @@
+# 高德 Key (敏感, 不能 commit)
+config/amap.js
+
+# 微信开发者工具本地配置
+project.private.config.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 临时图片缓存 (Phase 2B 抓 jpg 后产生)
+data/timetable_imgs/
+data/recognized/
+
+# 系统
+.DS_Store
+*.log

@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/picker/picker",
+    "pages/favorites/favorites",
+    "pages/me/me",
+    "pages/schedule/schedule"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#F2F2F0",
+    "navigationBarTitleText": "下一班 · 地铁助手",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F2F2F0",
+    "navigationStyle": "custom"
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

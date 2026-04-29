@@ -1,0 +1,650 @@
+/* 极简卡片风 — 移植自 v4 design demo. 使用 rpx (1rpx = 屏宽/750) 适配多屏 */
+
+.phone {
+  min-height: 100vh;
+  background: var(--bg);
+  /* 给底部 fixed tab bar 腾位 (tab 高 ~ 130rpx + 底部安全区) */
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.statusbar { width: 100%; }
+
+/* 顶部 brand 栏 */
+.top-bar {
+  padding: 24rpx 48rpx 16rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.top-title {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: var(--ink-2);
+  letter-spacing: 0.05em;
+}
+.top-time {
+  font-size: 24rpx;
+  color: var(--ink-3);
+  font-feature-settings: "tnum" 1;
+  font-weight: 500;
+}
+
+/* 主卡片 */
+.main-card {
+  margin: 16rpx 32rpx 32rpx;
+  border-radius: 56rpx;
+  background: var(--card);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  position: relative;
+}
+
+/* 卡片头 */
+.card-head {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+  color: #fff;
+  padding: 44rpx 48rpx 52rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.head-row1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32rpx;
+}
+
+.line-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 16rpx;
+  background: rgba(255,255,255,0.22);
+  padding: 12rpx 24rpx 12rpx 12rpx;
+  border-radius: 200rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+.line-pill .num {
+  width: 44rpx;
+  height: 44rpx;
+  background: #fff;
+  color: var(--accent);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 26rpx;
+  line-height: 1;
+}
+
+.nowtime {
+  font-size: 22rpx;
+  opacity: 0.85;
+  font-feature-settings: "tnum" 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.nowtime .live {
+  width: 12rpx; height: 12rpx;
+  background: #fff;
+  border-radius: 50%;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* 站点行: 站名 + 拼音 + 右侧 chevron · 整行可点 */
+.station-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 4rpx;
+  padding: 4rpx 0;
+  transition: opacity 0.15s ease;
+}
+.station-row.row-active,
+.station-row:active { opacity: 0.6; }
+.station-text { flex: 1; min-width: 0; }
+.station-chevron {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.station-name {
+  font-size: 72rpx;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  margin-bottom: 12rpx;
+}
+.station-en {
+  font-size: 22rpx;
+  letter-spacing: 0.2em;
+  opacity: 0.75;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* head 右侧操作区: LIVE + 切换 pill */
+.head-actions {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+.change-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+  background: rgba(255, 255, 255, 0.22);
+  padding: 8rpx 16rpx 8rpx 18rpx;
+  border-radius: 100rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.05em;
+  transition: all 0.15s ease;
+}
+.change-pill.pill-active,
+.change-pill:active {
+  transform: scale(0.94);
+  background: rgba(255, 255, 255, 0.36);
+}
+.change-pill .change-arrow {
+  font-size: 28rpx;
+  font-weight: 700;
+  margin-top: -2rpx;
+  margin-left: 2rpx;
+}
+
+/* 收藏按钮 (header 内) */
+.fav-btn {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.fav-btn .fav-icon {
+  font-size: 36rpx;
+  color: #fff;
+  line-height: 1;
+}
+.fav-btn.is-fav {
+  background: rgba(255, 255, 255, 0.95);
+}
+.fav-btn.is-fav .fav-icon {
+  color: #FFB800;
+}
+.fav-btn.pill-active,
+.fav-btn:active {
+  transform: scale(0.92);
+}
+
+/* 方向切换 — 内嵌 card-head 的双 pill */
+.dir-pills {
+  margin-top: 32rpx;
+  display: flex;
+  gap: 12rpx;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 100rpx;
+  padding: 6rpx;
+}
+.dir-pill {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 14rpx 16rpx;
+  border-radius: 100rpx;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.dir-pill:active { transform: scale(0.97); }
+.dir-pill.active {
+  background: #fff;
+  color: var(--accent);
+  font-weight: 700;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.15);
+}
+.dir-pill .dir-arrow {
+  font-size: 26rpx;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.dir-pill .dir-target {
+  font-size: 24rpx;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 卡片体 */
+.card-body {
+  padding: 64rpx 48rpx 56rpx;
+  text-align: center;
+  background: var(--card);
+}
+
+.countdown-label {
+  font-size: 22rpx;
+  letter-spacing: 0.25em;
+  color: var(--ink-3);
+  margin-bottom: 28rpx;
+  font-weight: 600;
+}
+
+.countdown-num-wrap {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 16rpx;
+  justify-content: center;
+}
+/* 长时间(>=60min)模式: 数字缩小, 双段 H + M 排开 */
+.countdown-num-wrap.is-long {
+  gap: 12rpx;
+}
+.countdown-num-wrap.is-long .countdown-num {
+  font-size: 168rpx;
+}
+.countdown-num-wrap.is-long .countdown-num.minor {
+  margin-left: 12rpx;
+}
+.countdown-num-wrap.is-long .countdown-unit {
+  font-size: 36rpx;
+}
+
+.countdown-num {
+  font-size: 248rpx;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.06em;
+  line-height: 0.85;
+  font-feature-settings: "tnum" 1;
+}
+.countdown-unit {
+  font-size: 44rpx;
+  color: var(--ink-2);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.arrival-meta {
+  margin-top: 24rpx;
+  font-size: 26rpx;
+  color: var(--ink-2);
+  font-weight: 500;
+}
+.arrival-meta .eta {
+  color: var(--accent);
+  font-weight: 700;
+  font-feature-settings: "tnum" 1;
+}
+
+.chips {
+  display: flex;
+  justify-content: center;
+  gap: 16rpx;
+  margin-top: 44rpx;
+  flex-wrap: wrap;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 18rpx 28rpx;
+  border-radius: 200rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  background: var(--row-active);
+  color: var(--ink);
+}
+.chip-end .dot {
+  width: 16rpx; height: 16rpx;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.chip-seat {
+  background: rgba(0, 149, 94, 0.10);
+  color: var(--seat);
+}
+.seat-icon {
+  width: 28rpx; height: 28rpx;
+  border: 4rpx solid var(--seat);
+  border-radius: 4rpx;
+  position: relative;
+}
+.seat-icon::before {
+  content: '';
+  position: absolute;
+  bottom: -8rpx; left: -4rpx; right: -4rpx;
+  height: 4rpx;
+  background: var(--seat);
+}
+
+/* 列车进站脉冲 */
+.pulse-bar {
+  margin-top: 48rpx;
+  height: 6rpx;
+  background: rgba(0,0,0,0.06);
+  border-radius: 200rpx;
+  position: relative;
+  overflow: hidden;
+}
+.pulse-fill {
+  position: absolute;
+  left: -30%;
+  top: 0; bottom: 0;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  border-radius: 200rpx;
+  animation: pulseSlide 2.4s cubic-bezier(0.4, 0.0, 0.6, 1) infinite;
+}
+@keyframes pulseSlide {
+  0% { left: -30%; }
+  100% { left: 100%; }
+}
+.pulse-text {
+  margin-top: 20rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
+  letter-spacing: 0.15em;
+  font-weight: 500;
+}
+.pulse-text .urgent {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* 已结束 */
+.ended {
+  padding: 60rpx 0 20rpx;
+}
+.ended-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+.ended-sub {
+  font-size: 24rpx;
+  color: var(--ink-3);
+  margin-top: 12rpx;
+}
+
+/* (旧的独立 direction-toggle 已合并到 card-head 的 .dir-pills) */
+
+/* 后续班次卡片 */
+.upcoming-card {
+  margin: 0 32rpx 24rpx;
+  background: var(--card);
+  border-radius: 44rpx;
+  padding: 36rpx 8rpx 12rpx;
+  box-shadow: var(--shadow-sm);
+}
+.section-title {
+  margin: 0 40rpx 16rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16rpx;
+}
+.section-title-left { display: flex; flex-direction: column; gap: 4rpx; min-width: 0; }
+.section-title .section-main {
+  font-size: 26rpx;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.section-title .section-sub {
+  font-size: 20rpx;
+  color: var(--ink-3);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.section-title .count {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* 全天 chip 入口 */
+.see-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 8rpx 14rpx 8rpx 18rpx;
+  background: var(--row-active);
+  border-radius: 100rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.see-all-btn .see-arrow {
+  font-size: 28rpx;
+  margin-top: -2rpx;
+  font-weight: 600;
+}
+.see-all-btn.row-active-feedback {
+  transform: scale(0.94);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.upcoming-fixed-end {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin: 0 40rpx 16rpx;
+  padding: 12rpx 20rpx;
+  background: var(--row-active);
+  border-radius: 100rpx;
+  font-size: 22rpx;
+  color: var(--ink-2);
+  font-weight: 500;
+  width: fit-content;
+}
+.upcoming-fixed-end text { font-weight: 700; color: var(--ink); }
+.info-dot.inline { width: 12rpx; height: 12rpx; }
+
+.train-row {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  padding: 26rpx 40rpx;
+  border-radius: 28rpx;
+  margin: 4rpx 0;
+}
+.train-time {
+  width: 112rpx;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--ink);
+  font-feature-settings: "tnum" 1;
+  letter-spacing: -0.01em;
+}
+.train-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  font-size: 28rpx;
+  color: var(--ink);
+  font-weight: 500;
+}
+.info-dot {
+  width: 14rpx; height: 14rpx;
+  border-radius: 50%;
+}
+.origin-tag {
+  font-size: 20rpx;
+  color: var(--seat);
+  background: rgba(0, 149, 94, 0.10);
+  padding: 4rpx 16rpx;
+  border-radius: 200rpx;
+  font-weight: 600;
+}
+.train-eta {
+  color: var(--ink-3);
+  font-size: 24rpx;
+  font-weight: 500;
+  font-feature-settings: "tnum" 1;
+}
+
+/* 末班车 */
+.last-train-card {
+  margin: 0 32rpx 32rpx;
+  background: var(--card);
+  border-radius: 44rpx;
+  padding: 32rpx 40rpx;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+}
+.last-icon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 28rpx;
+  background: var(--last-icon-bg);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 32rpx;
+  font-weight: 800;
+}
+.last-info { flex: 1; line-height: 1.45; }
+.last-info .label {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin-bottom: 4rpx;
+}
+.last-info .main {
+  font-size: 30rpx;
+  color: var(--ink);
+  font-weight: 700;
+  font-feature-settings: "tnum" 1;
+}
+.last-info .sub {
+  font-size: 24rpx;
+  color: var(--ink-2);
+  margin-top: 4rpx;
+}
+
+/* 底部 tabs · 吸底 */
+.bottom-tabs {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background: var(--card-translucent);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border-top: 1rpx solid var(--hairline);
+  padding: 16rpx 40rpx calc(16rpx + env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--ink-3);
+  font-size: 22rpx;
+  font-weight: 500;
+  padding: 8rpx 16rpx;
+}
+.tab.active { color: var(--accent); font-weight: 600; }
+
+/* tab icon: 用 CSS 画的简易图标 */
+.tab-icon {
+  width: 44rpx;
+  height: 44rpx;
+  position: relative;
+}
+.icon-clock {
+  border: 4rpx solid currentColor;
+  border-radius: 50%;
+}
+.icon-clock::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 22%;
+  width: 4rpx; height: 32%;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+.icon-clock::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 30%; height: 4rpx;
+  background: currentColor;
+  transform-origin: left center;
+  transform: rotate(40deg);
+}
+.icon-list {
+  background:
+    linear-gradient(currentColor, currentColor) 0 30% / 100% 4rpx,
+    linear-gradient(currentColor, currentColor) 0 50% / 100% 4rpx,
+    linear-gradient(currentColor, currentColor) 0 70% / 60% 4rpx;
+  background-repeat: no-repeat;
+}
+.icon-star {
+  background: currentColor;
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+.icon-me {
+  border: 4rpx solid currentColor;
+  border-radius: 50%;
+}
+.icon-me::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 28%;
+  width: 36%; height: 36%;
+  background: currentColor;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+.icon-me::after {
+  content: '';
+  position: absolute;
+  left: 50%; bottom: 8%;
+  width: 70%; height: 30%;
+  background: currentColor;
+  border-radius: 50% 50% 0 0;
+  transform: translateX(-50%);
+}
