@@ -5,7 +5,7 @@
  *   id = `${lineId}|${stationCn}|${direction}` (唯一键, 同站同方向去重)
  */
 
-const KEY = 'subwway_favorites';
+const KEY = 'subway_favorites';
 
 function makeId(lineId, stationCn, direction) {
   return `${lineId}|${stationCn}|${direction}`;

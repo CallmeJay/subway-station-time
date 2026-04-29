@@ -1,7 +1,7 @@
 {
   "description": "北京地铁 · 下一班 — 极简卡片风时刻表小程序",
   "miniprogramRoot": "./",
-  "projectname": "subwway-station-time",
+  "projectname": "subway-station-time",
   "setting": {
     "urlCheck": false,
     "es6": true,

@@ -30,7 +30,7 @@
 ## 项目结构
 
 ```
-subwway-station-time/
+subway-station-time/
 ├── app.json / app.js / app.wxss     主入口 + 全局样式 (含深浅主题)
 ├── pages/
 │   ├── index/         主页 (下一班实时倒计时)

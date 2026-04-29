@@ -48,7 +48,7 @@
 
 ### About
 
-"NextTrain · Beijing Metro Helper" (`subwway-station-time`) is an open-source MVP tool by an individual developer. This project has **no affiliation, authorization, partnership, or sponsorship** with Beijing Subway Operation Co., MTR Beijing Co., or any Beijing metro operator. This is an unofficial third-party tool.
+"NextTrain · Beijing Metro Helper" (`subway-station-time`) is an open-source MVP tool by an individual developer. This project has **no affiliation, authorization, partnership, or sponsorship** with Beijing Subway Operation Co., MTR Beijing Co., or any Beijing metro operator. This is an unofficial third-party tool.
 
 ### Data Sources
 
