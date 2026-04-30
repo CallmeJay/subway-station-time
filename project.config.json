@@ -37,6 +37,7 @@
       { "type": "folder", "value": "config" },
       { "type": "folder", "value": "data/timetable_imgs" },
       { "type": "folder", "value": "data/recognized" },
+      { "type": "folder", "value": "data/cloud" },
       { "type": "folder", "value": "components/.cache" },
       { "type": "file",   "value": "data/amap-timetables.json" },
       { "type": "file",   "value": "data/mtr-timetables.json" },

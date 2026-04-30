@@ -1,4 +1,5 @@
 const profile = require('./utils/profile.js');
+const cloud = require('./utils/cloudData.js');
 
 App({
   onLaunch() {
@@ -11,6 +12,10 @@ App({
         complete: () => {}
       });
     }
+
+    // 启动云端数据加载 (异步, 不阻塞 UI)
+    // 当前 CLOUD_BASE 为空 → 全走本地; bjsubway 恢复 + OCR 后填 URL 即可
+    cloud.init().catch(e => console.warn('[app] cloud init:', e));
 
     // 读取用户默认开屏站, 覆盖全局 default
     const p = profile.read();

@@ -1,5 +1,14 @@
 # 高德 Key (敏感, 不能 commit)
 config/amap.js
+# 云端 bucket / Key (敏感)
+config/cloud.js
+
+# 云端实际 OCR 数据 (大文件, 不进 git)
+data/cloud/lines/
+data/cloud/manifest.json
+
+# 监控日志
+/tmp/bjsubway-monitor.log
 
 # 微信开发者工具本地配置
 project.private.config.json

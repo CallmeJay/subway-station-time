@@ -1,0 +1,57 @@
+{
+  "_doc": "云端数据清单 · 上传到 CLOUD_BASE/manifest.json. 客户端 utils/cloudData.js 用此索引按需下载",
+  "version": "1.0.0",
+  "updatedAt": "2026-04-30T10:00:00Z",
+  "schema": "v1",
+
+  "lines": [
+    { "lineId": "line1",  "url": "lines/line1.json",  "hash": "abc123def", "size": 12450 },
+    { "lineId": "line2",  "url": "lines/line2.json",  "hash": "...", "size": 0 },
+    { "lineId": "line3",  "url": "lines/line3.json",  "hash": "...", "size": 0 },
+    { "lineId": "line4",  "url": "lines/line4.json",  "hash": "...", "size": 0 },
+    { "lineId": "line5",  "url": "lines/line5.json",  "hash": "...", "size": 0 },
+    { "lineId": "line6",  "url": "lines/line6.json",  "hash": "...", "size": 0 },
+    { "lineId": "line7",  "url": "lines/line7.json",  "hash": "...", "size": 0 },
+    { "lineId": "line8",  "url": "lines/line8.json",  "hash": "...", "size": 0 },
+    { "lineId": "line9",  "url": "lines/line9.json",  "hash": "...", "size": 0 },
+    { "lineId": "line10", "url": "lines/line10.json", "hash": "...", "size": 0 },
+    { "lineId": "line11", "url": "lines/line11.json", "hash": "...", "size": 0 },
+    { "lineId": "line12", "url": "lines/line12.json", "hash": "...", "size": 0 },
+    { "lineId": "line13", "url": "lines/line13.json", "hash": "...", "size": 0 },
+    { "lineId": "line14", "url": "lines/line14.json", "hash": "...", "size": 0 },
+    { "lineId": "line15", "url": "lines/line15.json", "hash": "...", "size": 0 },
+    { "lineId": "line16", "url": "lines/line16.json", "hash": "...", "size": 0 },
+    { "lineId": "line17", "url": "lines/line17.json", "hash": "...", "size": 0 },
+    { "lineId": "line18", "url": "lines/line18.json", "hash": "...", "size": 0 },
+    { "lineId": "line19", "url": "lines/line19.json", "hash": "...", "size": 0 },
+    { "lineId": "yz",     "url": "lines/yz.json",     "hash": "...", "size": 0 },
+    { "lineId": "fs",     "url": "lines/fs.json",     "hash": "...", "size": 0 },
+    { "lineId": "yf",     "url": "lines/yf.json",     "hash": "...", "size": 0 },
+    { "lineId": "s1",     "url": "lines/s1.json",     "hash": "...", "size": 0 },
+    { "lineId": "cp",     "url": "lines/cp.json",     "hash": "...", "size": 0 },
+    { "lineId": "airport","url": "lines/airport.json","hash": "...", "size": 0 },
+    { "lineId": "dxap",   "url": "lines/dxap.json",   "hash": "...", "size": 0 },
+    { "lineId": "xj",     "url": "lines/xj.json",     "hash": "...", "size": 0 }
+  ],
+
+  "_lineDataSchema": {
+    "_doc": "每个 lines/{id}.json 的格式",
+    "lineId": "line1",
+    "stations": [
+      { "idx": 1, "cn": "古城", "py": "Gucheng", "endpoint": "west" }
+    ],
+    "timetable": {
+      "_doc": "OCR 真数据 - 精确班次列表; 合成数据 - 仅元数据 ft/lt",
+      "_meta": "ocr | synth",
+      "古城": {
+        "east": {
+          "weekday": [
+            { "h": 5, "m": 13, "end": "四惠东", "isOrigin": true },
+            { "h": 5, "m": 22 }
+          ],
+          "weekend": []
+        }
+      }
+    }
+  }
+}
