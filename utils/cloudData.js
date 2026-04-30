@@ -103,16 +103,24 @@ function init() {
 
   return fetchManifest
     .then(remote => {
+      // 防御: doc 不存在 / 集合权限不对 / 离线 → 返回 null
+      if (!remote || typeof remote !== 'object') {
+        console.warn('[cloud] manifest empty (subway_meta/manifest doc not found?). Falling back to local data.');
+        return;
+      }
+      console.info('[cloud] manifest fetched, version:', remote.version);
       const local = _readCache(MANIFEST_KEY) || {};
-      if (remote.version === local.version) return;  // 版本一致, 不动
+      if (remote.version === local.version && Object.keys(_data).length > 0) {
+        console.info('[cloud] manifest unchanged, ' + Object.keys(_data).length + ' lines from cache');
+        return;
+      }
 
-      // 版本升级 → 增量下载变化的 line file
+      // 增量下载变化的 line
       const changed = (remote.lines || []).filter(l => {
         const localEntry = (local.lines || []).find(x => x.lineId === l.lineId);
-        return !localEntry || localEntry.hash !== l.hash;
+        return !localEntry || localEntry.hash !== l.hash || !_data[l.lineId];
       });
 
-      // 拉变化的 line: 数据库 collection 'subway_lines' / doc = lineId
       const fetchLine = (lineId) => WX_CLOUD_ENV
         ? _dbGetDoc('subway_lines', lineId)
         : _httpFetchByPath(`lines/${lineId}.json`);
@@ -125,10 +133,11 @@ function init() {
         }).catch(e => console.warn('[cloud] line ' + l.lineId + ' fetch fail', e))
       )).then(() => {
         _writeCache(MANIFEST_KEY, remote);
+        console.info('[cloud] sync done, ' + Object.keys(_data).length + ' lines cached');
       });
     })
     .catch(e => {
-      console.warn('[cloud] manifest fetch failed (offline?), using cache only:', e);
+      console.warn('[cloud] manifest fetch failed (offline?):', e);
     });
 }
 
