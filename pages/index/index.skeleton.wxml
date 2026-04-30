@@ -1,0 +1,121 @@
+<!--
+此文件为开发者工具生成，生成时间: 2026/4/30上午11:43:22
+使用方法：
+在 /Users/jaybian/WeChatProjects/bjsubway-mini/pages/index/index.wxml 引入模板
+
+```
+<import src="index.skeleton.wxml"/>
+<template is="skeleton" wx:if="{{loading}}" />
+```
+
+在 /Users/jaybian/WeChatProjects/bjsubway-mini/pages/index/index.wxss 中引入样式
+```
+@import "./index.skeleton.wxss";
+```
+
+更多详细信息可以参考文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/skeleton.html
+-->
+<template name="skeleton">
+  <view class="sk-container">
+    <view class="phone" style="--accent: #A4343A; --accent-deep: #7A1F25;">
+      <view class="statusbar" style="height: 71px;"></view>
+      <view class="top-bar">
+        <view class="top-title sk-transparent sk-text-14-2857-456 sk-text">下一班 · 地铁助手</view>
+        <view class="top-time sk-transparent sk-text-14-2857-132 sk-text">实时 · 11:43:21</view>
+      </view>
+      <view class="main-card">
+        <view class="card-head sk-image">
+          <view class="head-row1">
+            <view class="line-pill sk-transparent">
+              <view class="num sk-transparent sk-text-0-0000-167 sk-text">1</view>
+              1号线
+            </view>
+            <view class="head-actions">
+              <view class="nowtime sk-transparent">
+                <view class="live"></view>LIVE</view>
+              <view class="fav-btn" hover-class="pill-active" hover-stay-time="120">
+                <text class="fav-icon sk-transparent sk-text-0-0000-633 sk-text">☆</text>
+              </view>
+              <view class="change-pill" hover-class="pill-active" hover-stay-time="120">
+                <text class="sk-transparent sk-text-14-2857-34 sk-text">切换</text>
+                <text class="change-arrow sk-transparent sk-opacity">›</text>
+              </view>
+            </view>
+          </view>
+          <view class="station-row" hover-class="row-active" hover-stay-time="120">
+            <view class="station-text">
+              <view class="station-name sk-transparent sk-text-0-0000-37 sk-text">复兴门</view>
+              <view class="station-en sk-transparent sk-text-14-2857-302 sk-text">Fuxingmen</view>
+            </view>
+            <view class="station-chevron sk-transparent sk-text-0-0000-574 sk-text">›</view>
+          </view>
+          <view class="dir-pills">
+            <view class="dir-pill" data-dir="west">
+              <text class="dir-arrow sk-transparent sk-opacity">←</text>
+              <text class="dir-target sk-transparent sk-text-14-2857-703 sk-text">古城</text>
+            </view>
+            <view class="dir-pill active" data-dir="east">
+              <text class="dir-arrow sk-transparent sk-opacity">→</text>
+              <text class="dir-target sk-transparent sk-text-14-2857-467 sk-text">环球度假区</text>
+            </view>
+          </view>
+        </view>
+        <view class="card-body">
+          <view class="countdown-label sk-transparent sk-text-14-2857-419 sk-text" style="background-position-x: 50%;">下 一 班 还 有</view>
+          <view class="countdown-num-wrap">
+            <text class="countdown-num sk-transparent sk-text--8-8235-211 sk-text" style="background-position-x: 50%;">2</text>
+            <text class="countdown-unit sk-transparent sk-text-14-2857-402 sk-text" style="background-position-x: 50%;">分钟</text>
+          </view>
+          <view class="arrival-meta sk-transparent">
+            预计
+            <text class="eta sk-transparent sk-text-14-2857-101 sk-text" style="background-position-x: 50%;">11:45</text> 到站 · 终点 四惠东
+          </view>
+          <view class="chips">
+            <view class="chip chip-end sk-transparent">
+              <view class="dot" style="background: #A4343A;"></view>
+              终点 · 四惠东
+            </view>
+            <view class="chip chip-seat sk-transparent">
+              <view class="seat-icon sk-pseudo sk-pseudo-circle"></view>
+              始发 · 有座
+            </view>
+          </view>
+          <view class="pulse-bar">
+            <view class="pulse-fill sk-image"></view>
+          </view>
+          <view class="pulse-text">
+            <text class="sk-transparent sk-text-14-2857-127 sk-text" style="background-position-x: 50%;">列车运行中 · INCOMING</text>
+          </view>
+        </view>
+      </view>
+      <view class="upcoming-card">
+        <view class="section-title">
+          <view class="section-title-left">
+            <text class="section-main sk-transparent sk-text-14-2857-507 sk-text">后续班次</text>
+            <text class="section-sub sk-transparent sk-text-14-2857-5 sk-text">在 复兴门 到达</text>
+          </view>
+          <view class="see-all-btn" hover-class="row-active-feedback" hover-stay-time="120">
+            <text class="sk-transparent sk-text-14-2857-850 sk-text">全天</text>
+            <text class="see-arrow sk-transparent sk-opacity">›</text>
+          </view>
+        </view>
+        <view class="train-row">
+          <view class="train-time sk-transparent sk-text-14-2857-803 sk-text">11:50</view>
+          <view class="train-info">
+            <view class="info-dot" style="background: #A4343A;"></view>
+            <text class="info-end sk-transparent sk-text-14-2857-901 sk-text">→ 环球度假区</text>
+          </view>
+          <view class="train-eta sk-transparent sk-text-14-2857-873 sk-text">+7 分</view>
+        </view>
+        <view class="train-row">
+          <view class="train-time sk-transparent sk-text-14-2857-737 sk-text">11:55</view>
+          <view class="train-info">
+            <view class="info-dot" style="background: #A4343A;"></view>
+            <text class="info-end sk-transparent sk-text-14-2857-952 sk-text">→ 四惠</text>
+          </view>
+          <view class="train-eta sk-transparent sk-text-14-2857-506 sk-text">+12 分</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
