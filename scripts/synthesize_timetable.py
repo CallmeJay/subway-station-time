@@ -278,69 +278,99 @@ def main():
     real_lines = {k for k in mtr.keys() if not k.startswith("_")}
     print(f"京港地铁站级真实数据: {sorted(real_lines)}")
 
-    # === 第一份: 线路级时刻表 (退回方案, 工作日 + 双休日) ===
-    by_line_dir_weekday = {}
-    by_line_dir_weekend = {}
-    for line_id in LINE_OPS.keys():
-        for direction in ("east", "west"):
-            by_line_dir_weekday[f"{line_id}:{direction}"] = gen_schedule_for_line(line_id, direction, daytype="weekday")
-            by_line_dir_weekend[f"{line_id}:{direction}"] = gen_schedule_for_line(line_id, direction, daytype="weekend")
+    # === 第一份: 线路级元数据 (紧凑首末班 + endsRotate, 班次运行时合成) ===
+    line_meta = {}
+    for line_id, ops in LINE_OPS.items():
+        fh, fm = ops["first"]
+        lh, lm = ops["last"]
+        line_meta[line_id] = {
+            "ft": f"{fh:02d}:{fm:02d}",
+            "lt": f"{lh:02d}:{lm:02d}",
+            "endsEast": LINE_DIRECTIONS.get(line_id, {}).get("east", "终点"),
+            "endsWest": LINE_DIRECTIONS.get(line_id, {}).get("west", "起点"),
+            "endsRotate": ops.get("endsRotate") or [],
+        }
+    line_js = [
+        "// AUTO-GENERATED · 线路级元数据 (紧凑格式, 班次由 utils/scheduleSynth.js 合成)",
+        "",
+        "const _LINE_META = " + json.dumps(line_meta, ensure_ascii=False, separators=(',', ':')) + ";",
+        "",
+        "const _LINE_COLORS = " + json.dumps(LINE_COLOR_BY_ID, ensure_ascii=False, separators=(',', ':')) + ";",
+        "",
+        "const synth = require('../utils/scheduleSynth.js');",
+        "",
+        "function getSchedule(lineId, stationCn, direction, daytype) {",
+        "  const meta = _LINE_META[lineId];",
+        "  if (!meta) return [];",
+        "  const color = _LINE_COLORS[lineId] || '#888';",
+        "  // 终点轮换 (1 号线): 复制基本 schedule, 按周期改 end",
+        "  if (meta.endsRotate && meta.endsRotate.length && direction === 'east') {",
+        "    const base = synth.buildSchedule(meta.ft, meta.lt, daytype, '', color);",
+        "    return base.map((c, i) => Object.assign({}, c, { end: meta.endsRotate[i % meta.endsRotate.length] }));",
+        "  }",
+        "  const end = direction === 'east' ? meta.endsEast : meta.endsWest;",
+        "  const key = lineId + '|' + direction + '|' + (daytype || 'weekday');",
+        "  return synth.buildScheduleCached(key, meta.ft, meta.lt, daytype, end, color);",
+        "}",
+        "",
+        "module.exports = { getSchedule, _LINE_META };",
+    ]
+    OUT.write_text("\n".join(line_js), encoding="utf-8")
 
-    OUT.write_text(build_js_dual(by_line_dir_weekday, by_line_dir_weekend), encoding="utf-8")
+    # === 第二份: 站级元数据 (京港 4/14/16/17) ===
+    station_meta = {}
+    for line_id in real_lines:
+        station_meta[line_id] = {}
+        line_data = mtr[line_id]
+        line_color = LINE_COLOR_BY_ID.get(line_id, "#888")
+        for station, dirs in line_data.items():
+            if not isinstance(dirs, dict):
+                continue
+            station_meta[line_id][station] = {}
+            for direction, range_pair in dirs.items():
+                if range_pair is None or not isinstance(range_pair, list) or len(range_pair) != 2:
+                    continue
+                ft_str, lt_str = range_pair
+                if ft_str in ("-", "—") or lt_str in ("-", "—"):
+                    continue
+                # 终点站 (取该线路 east/west 端点)
+                end = LINE_DIRECTIONS.get(line_id, {}).get(direction, "")
+                station_meta[line_id][station][direction] = {
+                    "ft": ft_str,
+                    "lt": lt_str,
+                    "end": end,
+                    "endColor": line_color,
+                }
 
-    # === 第二份: 站级时刻表 (京港 4/14/16/17) - 工作日 + 双休 ===
-    def build_station_level(daytype):
-        sl = {}
-        for line_id in real_lines:
-            line_data = mtr[line_id]
-            sl[line_id] = {}
-            for station, dirs in line_data.items():
-                sl[line_id][station] = {}
-                for direction, range_pair in dirs.items():
-                    if range_pair is None:
-                        continue
-                    first = parse_hhmm(range_pair[0])
-                    last = parse_hhmm(range_pair[1])
-                    if first is None or last is None:
-                        continue
-                    fh, fm = first; lh, lm = last
-                    if (lh, lm) < (fh, fm):
-                        lh += 24
-                    sl[line_id][station][direction] = gen_schedule_for_line(
-                        line_id, direction, (fh, fm, lh, lm), daytype=daytype
-                    )
-        return sl
-
-    sl_wd = build_station_level("weekday")
-    sl_we = build_station_level("weekend")
-    real_stations = sum(len(v) for v in sl_wd.values())
-
+    real_stations = sum(len(v) for v in station_meta.values())
     out2 = ROOT / "data" / "timetable.station.generated.js"
     js = [
-        "// AUTO-GENERATED · 站级真实首末班 (源: 京港地铁 mtr.bj.cn)",
-        "// 工作日 + 双休日 双份, 节奏不同",
+        "// AUTO-GENERATED · 京港地铁站级元数据 (紧凑格式)",
+        "// 班次由 utils/scheduleSynth.js 在运行时合成 (按 daytype)",
         "",
-        "const _STATION_SCHEDULES_WEEKDAY = " + json.dumps(sl_wd, ensure_ascii=False, indent=2) + ";",
+        "const _STATION_META = " + json.dumps(station_meta, ensure_ascii=False, separators=(',', ':')) + ";",
         "",
-        "const _STATION_SCHEDULES_WEEKEND = " + json.dumps(sl_we, ensure_ascii=False, indent=2) + ";",
+        "const synth = require('../utils/scheduleSynth.js');",
         "",
         "function getStationSchedule(lineId, stationCn, direction, daytype) {",
-        "  const map = daytype === 'weekend' ? _STATION_SCHEDULES_WEEKEND : _STATION_SCHEDULES_WEEKDAY;",
-        "  const line = map[lineId];",
+        "  const line = _STATION_META[lineId];",
         "  if (!line) return null;",
         "  const station = line[stationCn];",
         "  if (!station) return null;",
-        "  return station[direction] || null;",
+        "  const meta = station[direction];",
+        "  if (!meta) return null;",
+        "  const key = lineId + '|' + stationCn + '|' + direction + '|' + (daytype || 'weekday');",
+        "  return synth.buildScheduleCached(key, meta.ft, meta.lt, daytype, meta.end, meta.endColor);",
         "}",
         "",
-        "module.exports = { getStationSchedule, _STATION_SCHEDULES_WEEKDAY, _STATION_SCHEDULES_WEEKEND };",
+        "module.exports = { getStationSchedule, _STATION_META };",
     ]
     out2.write_text("\n".join(js), encoding="utf-8")
 
-    print(f"\n✅ 线路级:  {OUT.relative_to(ROOT)}  (工作日 {sum(len(v) for v in by_line_dir_weekday.values())} 班 / 双休 {sum(len(v) for v in by_line_dir_weekend.values())} 班)")
-    print(f"✅ 站级:    {out2.relative_to(ROOT)}  ({real_stations} 站, 工作日+双休)")
+    print(f"\n✅ 线路级:  {OUT.relative_to(ROOT)}  ({len(line_meta)} 条线元数据)")
+    print(f"✅ 站级:    {out2.relative_to(ROOT)}  ({real_stations} 站, 工作时合成班次)")
     for lid in real_lines:
-        print(f"      · {lid}: {len(sl_wd[lid])} 站")
+        print(f"      · {lid}: {len(station_meta[lid])} 站")
 
 
 if __name__ == "__main__":

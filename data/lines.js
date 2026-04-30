@@ -88,10 +88,26 @@ const STATIONS_BY_LINE = {
   line1: LINE1_STATIONS
 };
 
+// 云端可用时优先取云端站点 (热更新)
+let _cloud = null;
+function _getCloud() {
+  if (_cloud === null) {
+    try { _cloud = require('../utils/cloudData.js'); } catch (e) { _cloud = false; }
+  }
+  return _cloud || null;
+}
+function _stationsFor(lineId) {
+  const c = _getCloud();
+  const cloudLine = c ? c.getLineData(lineId) : null;
+  if (cloudLine && cloudLine.stations && cloudLine.stations.length) {
+    return cloudLine.stations;
+  }
+  return STATIONS_BY_LINE[lineId] || [];
+}
+
 function findLine(id) {
   const line = LINES.find(l => l.id === id) || LINES[0];
-  // 从站点列表动态推算端点 (避免和站点数据重复维护)
-  const stations = STATIONS_BY_LINE[line.id];
+  const stations = _stationsFor(line.id);
   if (stations && stations.length >= 2) {
     return Object.assign({}, line, {
       endpoints: [stations[0].cn, stations[stations.length - 1].cn]
@@ -101,7 +117,7 @@ function findLine(id) {
 }
 
 function findStations(lineId) {
-  return STATIONS_BY_LINE[lineId] || [];
+  return _stationsFor(lineId);
 }
 
 function findStation(lineId, cn) {

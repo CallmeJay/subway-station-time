@@ -31,6 +31,25 @@
   "compileType": "miniprogram",
   "libVersion": "3.4.5",
   "condition": {},
+  "packOptions": {
+    "ignore": [
+      { "type": "folder", "value": "scripts" },
+      { "type": "folder", "value": "config" },
+      { "type": "folder", "value": "data/timetable_imgs" },
+      { "type": "folder", "value": "data/recognized" },
+      { "type": "folder", "value": "data/cloud" },
+      { "type": "folder", "value": "components/.cache" },
+      { "type": "file",   "value": "data/amap-timetables.json" },
+      { "type": "file",   "value": "data/mtr-timetables.json" },
+      { "type": "file",   "value": "data/mtr-stations.json" },
+      { "type": "file",   "value": "DISCLAIMER.md" },
+      { "type": "file",   "value": "README.md" },
+      { "type": "file",   "value": "LICENSE" },
+      { "type": "regexp", "value": "\\.example\\.js$" },
+      { "type": "regexp", "value": "\\.py$" },
+      { "type": "regexp", "value": "\\.gitignore$" }
+    ]
+  },
   "appid": "wx2e23538207296835",
   "simulatorPluginLibVersion": {},
   "packOptions": {
