@@ -33,8 +33,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CLOUD_DIR = ROOT / "data" / "cloud"
 LINES_DIR = CLOUD_DIR / "lines"
-DB_LINES_NDJSON = CLOUD_DIR / "subway_lines.ndjson"   # 云数据库批量导入格式
-DB_META_NDJSON  = CLOUD_DIR / "subway_meta.ndjson"
+DB_LINES_NDJSON = CLOUD_DIR / "subway_lines.json"   # 云数据库批量导入 (NDJSON 格式 + .json 后缀)
+DB_META_NDJSON  = CLOUD_DIR / "subway_meta.json"
 
 
 def js_eval(filepath: Path, var_name: str) -> dict:
