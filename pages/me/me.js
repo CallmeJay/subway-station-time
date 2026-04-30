@@ -2,8 +2,9 @@ const profile = require('../../utils/profile.js');
 const fav = require('../../utils/favorites.js');
 const themeUtil = require('../../utils/theme.js');
 const { findLine, findStation } = require('../../data/lines.js');
+const { APP_META } = require('../../data/appMeta.js');
 
-const APP_VERSION = '0.1.0 · MVP';
+const APP_VERSION = APP_META.versionLabel;
 
 Page({
   data: {
@@ -17,6 +18,7 @@ Page({
     homeLabel: '',
 
     version: APP_VERSION,
+    appMeta: APP_META,
     sources: [
       { name: '京港地铁 mtr.bj.cn', covers: '4 / 14 / 16 / 17 号线 · 站级首末班 (真实)' },
       { name: '高德地图 amap', covers: '其他 21 条线 · 站级首末班 (真实)' },
@@ -213,6 +215,54 @@ Page({
     wx.showModal({
       title: '反馈与建议',
       content: '本应用为个人 MVP 项目. 如发现数据错误, 以官方为准.',
+      showCancel: false,
+      confirmText: '了解'
+    });
+  },
+
+  // 关于本应用 (版本 + 元数据 + 介绍)
+  showAbout() {
+    const m = APP_META;
+    const lines = [
+      m.name + '  v' + m.version,
+      '',
+      m.tagline,
+      '',
+      m.description,
+      '',
+      '【主题色】 ' + m.primaryColor + ' (1 号线红 · DB11 国标)',
+      '【适用】   ' + m.audience,
+      '【作者】   ' + m.author.name,
+      '【开源】   ' + m.homepage,
+      '',
+      '─────',
+      m.disclaimer
+    ].join('\n');
+    wx.showModal({
+      title: '关于本应用',
+      content: lines,
+      showCancel: false,
+      confirmText: '了解'
+    });
+  },
+
+  // 隐私说明
+  showPrivacy() {
+    const p = APP_META.privacy;
+    const lines = [
+      '【数据收集】 ' + p.collects,
+      '',
+      '【本地存储】 ' + p.storage,
+      '',
+      '【网络通信】 ' + p.network,
+      '',
+      '【第三方】   ' + p.thirdParty,
+      '',
+      '所有用户操作 (收藏 / 默认开屏站 / 主题偏好等) 仅保存在本机, 不上传任何服务器.'
+    ].join('\n');
+    wx.showModal({
+      title: '隐私政策',
+      content: lines,
       showCancel: false,
       confirmText: '了解'
     });

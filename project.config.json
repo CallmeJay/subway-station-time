@@ -1,5 +1,5 @@
 {
-  "description": "北京地铁 · 下一班 — 极简卡片风时刻表小程序",
+  "description": "下一班 · 地铁助手 — 北京地铁实时下一班车查询, 27 线 525 站全覆盖, 含工作日/双休日时刻表 + 深色模式 + 收藏",
   "miniprogramRoot": "./",
   "projectname": "subway-station-time",
   "setting": {

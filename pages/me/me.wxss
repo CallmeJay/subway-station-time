@@ -341,6 +341,13 @@
   font-weight: 800;
   font-style: italic;
 }
+.row-icon.icon-app {
+  font-size: 32rpx;
+  font-weight: 800;
+}
+.row-icon.icon-shield {
+  font-size: 32rpx;
+}
 
 .row-text {
   flex: 1;

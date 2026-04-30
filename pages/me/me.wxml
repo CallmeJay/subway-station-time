@@ -129,11 +129,29 @@
     <!-- 关于 -->
     <view class="section-label">关于</view>
     <view class="row-group">
+      <view class="row" hover-class="row-active" hover-stay-time="120" bindtap="showAbout">
+        <view class="row-icon icon-app" style="background: rgba(164,52,58,0.12); color: {{appMeta.primaryColor}};">下</view>
+        <view class="row-text">
+          <view class="row-title">{{appMeta.name}}</view>
+          <view class="row-sub">{{appMeta.tagline}}</view>
+        </view>
+        <view class="row-chevron">›</view>
+      </view>
+
       <view class="row" hover-class="row-active" hover-stay-time="120" bindtap="showSources">
         <view class="row-icon icon-source">⊕</view>
         <view class="row-text">
           <view class="row-title">数据来源</view>
           <view class="row-sub">京港地铁 · 高德地图 · DB11/T657.2</view>
+        </view>
+        <view class="row-chevron">›</view>
+      </view>
+
+      <view class="row" hover-class="row-active" hover-stay-time="120" bindtap="showPrivacy">
+        <view class="row-icon icon-shield">⛨</view>
+        <view class="row-text">
+          <view class="row-title">隐私政策</view>
+          <view class="row-sub">不收集任何用户信息</view>
         </view>
         <view class="row-chevron">›</view>
       </view>
@@ -151,7 +169,7 @@
         <view class="row-icon icon-info">i</view>
         <view class="row-text">
           <view class="row-title">版本</view>
-          <view class="row-sub">{{version}}</view>
+          <view class="row-sub">v{{appMeta.version}} · {{appMeta.releaseDate}}</view>
         </view>
       </view>
     </view>
