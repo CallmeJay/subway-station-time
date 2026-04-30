@@ -33,6 +33,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CLOUD_DIR = ROOT / "data" / "cloud"
 LINES_DIR = CLOUD_DIR / "lines"
+DB_LINES_NDJSON = CLOUD_DIR / "subway_lines.ndjson"   # 云数据库批量导入格式
+DB_META_NDJSON  = CLOUD_DIR / "subway_meta.ndjson"
 
 
 def js_eval(filepath: Path, var_name: str) -> dict:
@@ -79,11 +81,14 @@ def main():
     ))
     print(f"  ✓ 京港站级 {len(mtr_meta)} 线, 高德站级 {len(amap_meta)} 线, 线路级 {len(line_meta)} 线")
 
-    print("[3/4] 拆分 per-line JSON...")
+    print("[3/4] 拆分 per-line JSON + 同步生成数据库 NDJSON 导入文件...")
     manifest_lines = []
+    db_lines_lines = []   # 写入 subway_lines.ndjson 每行一条 doc
+
     for line in LINES:
         line_id = line["id"]
         payload = {
+            "_id": line_id,        # 云数据库主键
             "lineId": line_id,
             "name": line["name"],
             "shortName": line["shortName"],
@@ -91,7 +96,6 @@ def main():
             "colorDeep": line["colorDeep"],
             "stations": STATIONS.get(line_id, []),
             "timetable": {
-                # 优先级: mtr > amap > 线路级合成 (客户端按 source 字段 fallback)
                 "mtr":  mtr_meta.get(line_id, {}),
                 "amap": amap_meta.get(line_id, {}),
                 "line": line_meta.get(line_id, {}),
@@ -101,6 +105,10 @@ def main():
         out = LINES_DIR / f"{line_id}.json"
         text = json.dumps(payload, ensure_ascii=False, separators=(',', ':'))
         out.write_text(text, encoding="utf-8")
+
+        # NDJSON 一行一条文档 (无 _id 字段时云数据库自动分配, 这里强制用 lineId)
+        db_lines_lines.append(json.dumps(payload, ensure_ascii=False, separators=(',', ':')))
+
         manifest_lines.append({
             "lineId": line_id,
             "url": f"lines/{line_id}.json",
@@ -109,7 +117,9 @@ def main():
         })
         print(f"  · {line_id:8s}  {len(text)//1024:4d} KB  {len(payload['stations'])} 站")
 
-    print("[4/4] 写 manifest.json...")
+    DB_LINES_NDJSON.write_text("\n".join(db_lines_lines) + "\n", encoding="utf-8")
+
+    print("[4/4] 写 manifest.json + manifest NDJSON...")
     manifest = {
         "version": datetime.now(timezone.utc).strftime("%Y%m%d.%H%M"),
         "updatedAt": datetime.now(timezone.utc).isoformat(),
@@ -119,13 +129,22 @@ def main():
     manifest_path = CLOUD_DIR / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    # 数据库版的 manifest: 单条文档, _id = "manifest"
+    db_meta_doc = dict(manifest)
+    db_meta_doc["_id"] = "manifest"
+    DB_META_NDJSON.write_text(json.dumps(db_meta_doc, ensure_ascii=False, separators=(',', ':')) + "\n", encoding="utf-8")
+
     total_size = sum(l["size"] for l in manifest_lines)
     print(f"\n✅ 写入 {CLOUD_DIR.relative_to(ROOT)}/")
     print(f"   {len(manifest_lines)} 条线 · 总 {total_size // 1024} KB ({total_size / 1024 / 1024:.2f} MB)")
     print(f"   manifest version: {manifest['version']}")
-    print(f"\n下一步:")
-    print(f"   方案 A: 微信开发者工具 → 云开发 → 文件存储 → 拖拽 data/cloud/ 整个目录")
-    print(f"   方案 B: python3 scripts/upload_to_cloud.py --provider wxcloud")
+    print(f"\n下一步 (推荐用云数据库):")
+    print(f"   1. 微信开发者工具 → 云开发 → 数据库")
+    print(f"   2. 创建集合 'subway_lines' → 导入 → 选 {DB_LINES_NDJSON.relative_to(ROOT)}")
+    print(f"      (导入选项: 数据冲突时覆盖, 文件类型 ndjson)")
+    print(f"   3. 创建集合 'subway_meta' → 导入 → 选 {DB_META_NDJSON.relative_to(ROOT)}")
+    print(f"   4. 两个集合权限改成 '所有用户可读, 仅创建者可读写'")
+    print(f"   5. cloudData.js 已配置 WX_CLOUD_ENV, 重启小程序生效")
 
 
 if __name__ == "__main__":

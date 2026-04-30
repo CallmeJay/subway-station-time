@@ -13,7 +13,7 @@
 // 两种云端模式 (二选一):
 //   1. WX_CLOUD_ENV: 微信云开发 (推荐, 用 wx.cloud SDK, 无需配域名白名单)
 //   2. CLOUD_BASE: 普通 HTTPS CDN (OSS / COS / GitHub Pages, 需配 request 合法域名)
-const WX_CLOUD_ENV = '';  // 例: 'subway-data-1abc23def'
+const WX_CLOUD_ENV = 'cloud1-d3gyjnq3q7410a857';
 const CLOUD_BASE   = '';  // 例: 'https://your-cdn.com/subway-data/'
 
 const MANIFEST_KEY  = '__cloudManifest';
@@ -53,33 +53,22 @@ function _httpGetJson(url) {
   });
 }
 
-// 微信云开发: fileID 形如 'cloud://subway-prod-xxx.7368-subway-prod-xxx-1234/manifest.json'
-function _wxcloudGetJson(fileID) {
-  return new Promise((resolve, reject) => {
-    wx.cloud.downloadFile({
-      fileID,
-      success: res => {
-        // 拿到本地临时文件路径, 读 JSON
-        wx.getFileSystemManager().readFile({
-          filePath: res.tempFilePath,
-          encoding: 'utf8',
-          success: r => { try { resolve(JSON.parse(r.data)); } catch (e) { reject(e); } },
-          fail: reject
-        });
-      },
-      fail: reject
+// 微信云数据库: 用 db.collection.doc.get() 取数据 (无需 fileID)
+function _dbGetDoc(collectionName, docId) {
+  if (!wx.cloud) return Promise.reject(new Error('wx.cloud unavailable'));
+  const db = wx.cloud.database();
+  return db.collection(collectionName).doc(docId).get()
+    .then(res => res.data)
+    .catch(err => {
+      // doc not found → 返回 null (被调用方降级)
+      if (err && (err.errCode === -1 || /not exist/i.test(err.errMsg || ''))) return null;
+      throw err;
     });
-  });
 }
 
-// 统一 fetch: 自动选 wxcloud 或 http
-function _fetchJson(relativeOrFileID) {
-  if (WX_CLOUD_ENV) {
-    // wxcloud 路径: 用 fileID 模式
-    // 假设上传时把 lines/line1.json 等扁平传, fileID 由 wx.cloud 生成的不固定 → 推荐用 manifest 里的预生成 fileID
-    return _wxcloudGetJson(relativeOrFileID);
-  }
-  return _httpGetJson(CLOUD_BASE + relativeOrFileID);
+// 普通 HTTPS CDN 路径
+function _httpFetchByPath(relativePath) {
+  return _httpGetJson(CLOUD_BASE + relativePath);
 }
 
 /**
@@ -107,12 +96,12 @@ function init() {
   _hydrateFromCache();
   _resolveReady();
 
-  // 2. 后台异步检查更新 (manifest 路径)
-  const manifestPath = WX_CLOUD_ENV
-    ? `cloud://${WX_CLOUD_ENV}.${WX_CLOUD_ENV.split('-').pop()}/manifest.json`
-    : 'manifest.json';
+  // 2. 后台异步检查更新
+  const fetchManifest = WX_CLOUD_ENV
+    ? _dbGetDoc('subway_meta', 'manifest')   // 云数据库: 集合 subway_meta, 文档 _id=manifest
+    : _httpFetchByPath('manifest.json');     // CDN: 直接拉文件
 
-  return _fetchJson(manifestPath)
+  return fetchManifest
     .then(remote => {
       const local = _readCache(MANIFEST_KEY) || {};
       if (remote.version === local.version) return;  // 版本一致, 不动
@@ -123,8 +112,14 @@ function init() {
         return !localEntry || localEntry.hash !== l.hash;
       });
 
+      // 拉变化的 line: 数据库 collection 'subway_lines' / doc = lineId
+      const fetchLine = (lineId) => WX_CLOUD_ENV
+        ? _dbGetDoc('subway_lines', lineId)
+        : _httpFetchByPath(`lines/${lineId}.json`);
+
       return Promise.all(changed.map(l =>
-        _fetchJson(l.fileID || l.url).then(data => {
+        fetchLine(l.lineId).then(data => {
+          if (!data) return;
           _writeCache(DATA_KEY_PREFIX + l.lineId, data);
           _data[l.lineId] = data;
         }).catch(e => console.warn('[cloud] line ' + l.lineId + ' fetch fail', e))
